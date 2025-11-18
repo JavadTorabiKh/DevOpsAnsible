@@ -1,17 +1,21 @@
 # GitLab CI/CD Pipeline Configuration
 # This file defines the continuous integration and deployment workflow
 
+
 stages:
   - lint       # Check Ansible syntax and best practices
   - test       # Run Molecule tests
   - deploy     # Deploy to environments
 
+
 variables:
   ANSIBLE_FORCE_COLOR: "1"  # Force color output for Ansible
+
 
 before_script:
   - pip install -r requirements.txt  # Install Python dependencies
   - ansible-galaxy install -r ansible/requirements.yml  # Install Ansible roles
+
 
 lint:
   stage: lint
@@ -19,11 +23,13 @@ lint:
     - ansible-lint ansible/playbooks/*.yml  # Lint all playbooks
     - yamllint .                           # Check YAML syntax in all files
 
+
 test:
   stage: test
   script:
     - pip install -r tests/test-requirements.txt  # Install test dependencies
     - cd tests/molecule && molecule test         # Run Molecule tests
+
 
 deploy_staging:
   stage: deploy
@@ -31,6 +37,7 @@ deploy_staging:
   script:
     - ansible-playbook -i ansible/inventory/staging ansible/playbooks/site.yml
   when: manual  # Requires manual trigger
+
 
 deploy_prod:
   stage: deploy
